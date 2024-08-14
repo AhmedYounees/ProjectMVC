@@ -1,5 +1,7 @@
-﻿using ProjectMVC.Models;
-using ProjectMVC.Data;
+﻿
+
+using DataAccessLayer.Data;
+using Entities.Models;
 
 namespace ProjectMVC.Repository
 {

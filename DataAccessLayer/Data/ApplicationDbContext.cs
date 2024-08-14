@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProjectMVC.Models;
+using Entities.Models;
 
-namespace ProjectMVC.Data
+namespace DataAccessLayer.Data
 {
     public class ApplicationDbContext:DbContext
     {

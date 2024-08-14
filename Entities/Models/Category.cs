@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ProjectMVC.Models
+namespace Entities.Models
 {
     public class Category
     {

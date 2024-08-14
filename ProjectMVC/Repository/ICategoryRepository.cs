@@ -1,4 +1,6 @@
-﻿using ProjectMVC.Models;
+﻿
+
+using Entities.Models;
 
 namespace ProjectMVC.Repository
 {

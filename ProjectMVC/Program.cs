@@ -1,6 +1,6 @@
+using DataAccessLayer.Data;
+using Entities.Models;
 using Microsoft.EntityFrameworkCore;
-using ProjectMVC.Data;
-using ProjectMVC.Models;
 using ProjectMVC.Repository;
 
 namespace ProjectMVC

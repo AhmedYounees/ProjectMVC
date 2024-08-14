@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ProjectMVC.Models;
+﻿using Entities.Models;
+using Microsoft.AspNetCore.Mvc;
 using ProjectMVC.Repository;
 
 namespace ProjectMVC.Controllers
@@ -35,6 +35,8 @@ namespace ProjectMVC.Controllers
             {
                 categorys.Add(category);
                 categorys.Save();
+                TempData["Type"] = "success";
+                TempData["message"] = "created successfully";
                 return RedirectToAction("Index");
 
             }
@@ -67,6 +69,8 @@ namespace ProjectMVC.Controllers
 
             categorys.Update(IDFromDataBase,category);
             categorys.Save();
+            TempData["Type"] = "success";
+            TempData["message"] = "Updated successfully";
             return RedirectToAction("Index");
 
         }
@@ -83,6 +87,8 @@ namespace ProjectMVC.Controllers
         {
             categorys.Delete(id);
             categorys.Save();
+            TempData["Type"] = "error";
+            TempData["message"] = "Deleted successfully";
             return RedirectToAction("index");
         }
 
