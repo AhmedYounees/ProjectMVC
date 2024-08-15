@@ -10,6 +10,6 @@ namespace DataAccessLayer.Data
             
         }
 
-        public DbSet<Category>categories { get; set; }
+        public DbSet<Category> categories { get; set; }
     }
 }

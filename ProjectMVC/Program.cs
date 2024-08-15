@@ -1,7 +1,9 @@
 using DataAccessLayer.Data;
+using DataAccessLayer.Implementation;
 using Entities.Models;
+using Entities.Reposatories;
 using Microsoft.EntityFrameworkCore;
-using ProjectMVC.Repository;
+using Entities.Reposatories ;
 
 namespace ProjectMVC
 {
@@ -18,7 +20,8 @@ namespace ProjectMVC
                 option.UseSqlServer(builder.Configuration.GetConnectionString("cs"));
             });
             builder.Services.AddScoped<ApplicationDbContext>();
-            builder.Services.AddScoped<IGeneircRepository<Category>,CategoryRepository>();
+            builder.Services.AddScoped<IUnitOfWork,UnitOfWok>();
+            //builder.Services.AddScoped<IGeneircRepository<Category>,CategoryRepository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

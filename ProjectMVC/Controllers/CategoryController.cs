@@ -1,20 +1,20 @@
 ﻿using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
-using ProjectMVC.Repository;
+using Entities.Reposatories;
 
 namespace ProjectMVC.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly IGeneircRepository<Category> categorys;
+        private IUnitOfWork _unitOfWork;
 
-        public CategoryController(IGeneircRepository<Category> categorys)
+        public CategoryController(IUnitOfWork unitOfWork)
         {
-            this.categorys = categorys;
+            _unitOfWork = unitOfWork;
         }
         public IActionResult Index()
         {
-            var CategoryList=categorys.GetAll();
+            var CategoryList = _unitOfWork.Category.GetAll();
 
             return View(CategoryList);
         }
@@ -33,8 +33,9 @@ namespace ProjectMVC.Controllers
         {
             if(ModelState.IsValid)
             {
-                categorys.Add(category);
-                categorys.Save();
+                
+                _unitOfWork.Category.add(category);
+                _unitOfWork.complete();
                 TempData["Type"] = "success";
                 TempData["message"] = "created successfully";
                 return RedirectToAction("Index");
@@ -53,7 +54,7 @@ namespace ProjectMVC.Controllers
             }
             else
             {
-                Category CategoryFromDataBase = categorys.GetById(id);
+                Category CategoryFromDataBase = _unitOfWork.Category.GetByID ( x=>x.id == id );
                // categorys.Update(id, CategoryFromDataBase);
                // categorys.Save();
                 return View(CategoryFromDataBase);
@@ -67,9 +68,10 @@ namespace ProjectMVC.Controllers
 
              int IDFromDataBase=category.id;
 
-            categorys.Update(IDFromDataBase,category);
-            categorys.Save();
-            TempData["Type"] = "success";
+            
+            _unitOfWork.Category.update(category);
+            _unitOfWork.complete();
+            TempData["Type"] = "info";
             TempData["message"] = "Updated successfully";
             return RedirectToAction("Index");
 
@@ -77,7 +79,11 @@ namespace ProjectMVC.Controllers
         [HttpGet]
         public IActionResult Delete(int id)
         {
-             Category CategoryFromDataBase=categorys.GetById(id);
+            if(id==null| id == 0)
+            {
+                NotFound();
+            }
+             Category CategoryFromDataBase=_unitOfWork.Category.GetByID(x=>x.id==id);
             return View(CategoryFromDataBase);
 
 
@@ -85,8 +91,13 @@ namespace ProjectMVC.Controllers
         [HttpPost]
         public IActionResult DeleteCategory(int id)
         {
-            categorys.Delete(id);
-            categorys.Save();
+            var categoryDB = _unitOfWork.Category.GetByID(x => x.id == id);
+            if (categoryDB == null)
+            {
+                NotFound();
+            }
+            _unitOfWork.Category.remove(categoryDB);
+            _unitOfWork.complete();
             TempData["Type"] = "error";
             TempData["message"] = "Deleted successfully";
             return RedirectToAction("index");
