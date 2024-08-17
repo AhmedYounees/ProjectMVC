@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Entities.Reposatories;
 
-namespace ProjectMVC.Controllers
+namespace ProjectMVC.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         private IUnitOfWork _unitOfWork;
@@ -31,9 +32,9 @@ namespace ProjectMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Category category)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                
+
                 _unitOfWork.Category.add(category);
                 _unitOfWork.complete();
                 TempData["Type"] = "success";
@@ -48,15 +49,15 @@ namespace ProjectMVC.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-             if(id==0)
+            if (id == 0)
             {
                 return NotFound();
             }
             else
             {
-                Category CategoryFromDataBase = _unitOfWork.Category.GetByID ( x=>x.id == id );
-               // categorys.Update(id, CategoryFromDataBase);
-               // categorys.Save();
+                Category CategoryFromDataBase = _unitOfWork.Category.GetByID(x => x.id == id);
+                // categorys.Update(id, CategoryFromDataBase);
+                // categorys.Save();
                 return View(CategoryFromDataBase);
             }
 
@@ -66,9 +67,9 @@ namespace ProjectMVC.Controllers
         public IActionResult Edit(Category category)
         {
 
-             int IDFromDataBase=category.id;
+            int IDFromDataBase = category.id;
 
-            
+
             _unitOfWork.Category.update(category);
             _unitOfWork.complete();
             TempData["Type"] = "info";
@@ -79,11 +80,11 @@ namespace ProjectMVC.Controllers
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            if(id==null| id == 0)
+            if (id == null | id == 0)
             {
                 NotFound();
             }
-             Category CategoryFromDataBase=_unitOfWork.Category.GetByID(x=>x.id==id);
+            Category CategoryFromDataBase = _unitOfWork.Category.GetByID(x => x.id == id);
             return View(CategoryFromDataBase);
 
 

@@ -18,6 +18,7 @@ namespace ProjectMVC
             builder.Services.AddDbContext<ApplicationDbContext>(option =>
             {
                 option.UseSqlServer(builder.Configuration.GetConnectionString("cs"));
+
             });
             builder.Services.AddScoped<ApplicationDbContext>();
             builder.Services.AddScoped<IUnitOfWork,UnitOfWok>();
@@ -37,7 +38,7 @@ namespace ProjectMVC
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{area=Admin}/{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
         }

@@ -12,10 +12,12 @@ namespace DataAccessLayer.Implementation
     {
         private readonly ApplicationDbContext _context;
         public ICategoryRepo Category { get; private set; }
+        public IProductRepo Product { get; private set; }
         public UnitOfWok (ApplicationDbContext context) 
         {
             _context = context;
             Category=new CategoryRepo(context);
+            Product=new ProductRepo(context);
         }
         
 
