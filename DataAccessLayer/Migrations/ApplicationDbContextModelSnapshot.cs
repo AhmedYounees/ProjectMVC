@@ -69,7 +69,6 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("img")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

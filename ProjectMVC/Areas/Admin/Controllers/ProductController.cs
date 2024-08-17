@@ -20,7 +20,7 @@ namespace ProjectMVC.Areas.Admin.Controllers
         {
             var ProductList = _unitOfWork.Product.GetAll();
 
-            return View(ProductList);
+            return View("Index",ProductList);
         }
 
         [HttpGet]
@@ -125,7 +125,7 @@ namespace ProjectMVC.Areas.Admin.Controllers
             _unitOfWork.complete();
             TempData["Type"] = "error";
             TempData["message"] = "Deleted successfully";
-            return RedirectToAction("index");
+            return RedirectToAction("Index");
         }
 
     }
