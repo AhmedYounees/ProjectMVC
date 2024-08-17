@@ -9,6 +9,7 @@ namespace Entities.Reposatories
     public interface IUnitOfWork:IDisposable
     {
         ICategoryRepo Category { get; }
+        IProductRepo Product { get; }
 
         int complete();
     }

@@ -11,5 +11,6 @@ namespace DataAccessLayer.Data
         }
 
         public DbSet<Category> categories { get; set; }
+        public DbSet<Product> Products { get; set; }
     }
 }
