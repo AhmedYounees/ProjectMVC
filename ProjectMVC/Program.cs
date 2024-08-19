@@ -17,7 +17,8 @@ namespace ProjectMVC
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<ApplicationDbContext>(option =>
             {
-                option.UseSqlServer(builder.Configuration.GetConnectionString("cs"));
+                option.UseSqlServer(builder.Configuration.GetConnectionString("cs"),
+                    b => b.MigrationsAssembly("DataAccessLayer"));
 
             });
             builder.Services.AddScoped<ApplicationDbContext>();

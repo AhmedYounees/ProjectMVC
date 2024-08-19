@@ -1,6 +1,8 @@
 ﻿using Entities.Models;
 using Entities.ViewModels;
+
 using Microsoft.AspNetCore.Mvc;
+
 using Entities.Reposatories;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -18,11 +20,15 @@ namespace ProjectMVC.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            var ProductList = _unitOfWork.Product.GetAll();
+            
 
-            return View("Index",ProductList);
+            return View("Index");
         }
-
+        public IActionResult getData()
+        {
+            var product = _unitOfWork.Product.GetAll(icludeWord:"Category");
+            return Json(new {data=product});
+        }
         [HttpGet]
         public IActionResult Create()
         {
@@ -31,7 +37,7 @@ namespace ProjectMVC.Areas.Admin.Controllers
             {
                 Value = c.id.ToString(),
                 Text = c.name 
-            }).ToList();
+            }).ToList(); 
     
    
 
@@ -73,18 +79,26 @@ namespace ProjectMVC.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            if (id == 0)
+            if (id == null|id == 0)
             {
                 return NotFound();
             }
-            else
-            {
-                Product ProductFromDataBase = _unitOfWork.Product.GetByID(x => x.Id == id);
-                // products.Update(id, ProductFromDataBase);
-                // products.Save();
-                return View(ProductFromDataBase);
-            }
+            //ProductVM VM = new ProductVM()
+            //{
+            //    Product = _unitOfWork.Product.GetByID(x => x.Id == id),
+            //    Categories = _unitOfWork.Category.GetAll().Select(x => new SelectListItem
+            //    {
+            //        Text = x.name,
+            //        Value = x.id.ToString()
+            //    })
 
+            //};
+
+            var product = _unitOfWork.Product.GetByID(x=>x.Id==id);
+            var categorylist=_unitOfWork.Category.GetAll();
+            ViewBag.category=categorylist;
+            return View();
+              
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -101,31 +115,36 @@ namespace ProjectMVC.Areas.Admin.Controllers
             return RedirectToAction("Index");
 
         }
-        [HttpGet]
-        public IActionResult Delete(int id)
-        {
-            if (id == null | id == 0)
-            {
-                NotFound();
-            }
-            Product ProductFromDataBase = _unitOfWork.Product.GetByID(x => x.Id == id);
-            return View(ProductFromDataBase);
+        //[HttpGet]
+        //public IActionResult Delete(int id)
+        //{
+        //    if (id == null | id == 0)
+        //    {
+        //        NotFound();
+        //    }
+        //    Product ProductFromDataBase = _unitOfWork.Product.GetByID(x => x.Id == id);
+        //    return View(ProductFromDataBase);
 
 
-        }
-        [HttpPost]
+        //}
+        [HttpDelete]
         public IActionResult DeleteProduct(int id)
         {
             var productDB = _unitOfWork.Product.GetByID(x => x.Id == id);
             if (productDB == null)
             {
-                NotFound();
+                Json(new { success = false , message = "Error While Deleting"});
             }
             _unitOfWork.Product.remove(productDB);
+            var oldimg = Path.Combine(_webHostEnvironment.WebRootPath, productDB.img.TrimStart('\\'));
+            if (System.IO.File.Exists(oldimg))
+            {
+                System.IO.File.Delete(oldimg);
+            }
             _unitOfWork.complete();
-            TempData["Type"] = "error";
-            TempData["message"] = "Deleted successfully";
-            return RedirectToAction("Index");
+            //TempData["Type"] = "error";
+            return Json(new { success = true, message = "file has Deleting" });
+            //return RedirectToAction("Index");
         }
 
     }

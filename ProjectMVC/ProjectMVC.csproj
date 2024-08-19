@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Areas\Admin\Views\Product\Edit.cshtml" />
     <None Include="wwwroot\js\site.js" />
   </ItemGroup>
 

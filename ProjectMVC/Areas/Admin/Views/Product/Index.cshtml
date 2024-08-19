@@ -1,26 +1,36 @@
 ﻿@model List<Product>
 @{
 
-    ViewBag.PageTitle = "Category Managment";
-    ViewBag.CardTitle = "View Category";
+    ViewBag.PageTitle = "Product Managment";
+    ViewBag.CardTitle = "View Products";
     Layout = "_DashboradLayout";
 }
 
 
 <div>
 
-<a asp-action="Create"  asp-controller="Category" class="btn btn-primary">Create New </a>
+    <a  href="/Admin/Product/Create" class="btn btn-primary">Create New </a>
 </div>
 <br />
-    <table class="table table-bordered table-hover">
+<table id="productTable" class="table table-bordered table-hover">
+    <thead>
     <tr>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Price</th>
-        <th>Image</th>
-        <th>Actions</th>
+        <td >Name</td>
+        <td>Description</td>
+        <td>Price</td>
+        <td>Category</td>
+        <td>Actions</td>
     </tr>
-    @foreach(var item in Model)
+    </thead>
+
+
+</table>
+@section Scripts{
+    <script  src="~/js/Product.js"></script>
+}
+
+
+@*    @foreach(var item in Model)
     {
         <tr>
 
@@ -36,5 +46,4 @@
         </tr>
 
 
-    }
-</table>
+    } *@

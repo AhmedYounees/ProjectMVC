@@ -12,6 +12,7 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="/css/adminlte.min.css">
     <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+    <link rel=" stylesheet" href="//cdn.datatables.net/2.1.4/css/dataTables.dataTables.min.css" />
 </head>
 <body class="hold-transition sidebar-mini">
     <!-- Site wrapper -->
@@ -313,8 +314,11 @@
     <!-- AdminLTE App -->
     <script src="/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
-    <script src="/js/demo.js"></script>
+    <script src="//cdn.datatables.net/2.1.4/js/dataTables.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    @* @await RenderSectionAsync("Script", required: false) *@
 
 </body>
 </html>

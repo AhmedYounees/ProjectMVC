@@ -12,7 +12,7 @@ namespace Entities.Reposatories
         /////////////////معني البرامتر ده الجزء الاول ان هو مياخد لمدا اكسبرشن  /////////////
         ////////بتديله اسم الجدول اللي عايزه  Include معني البرامتر ده الجزء التاني انه لو عايز تضيف جمله //////
         ///////////////////    AllowNull عادي هي Include  ولو مفيش   /////////////
-        List<T> GetAll(Expression<Func<T,bool>>? predacate=null , string? icludeWord = null);
+        IEnumerable<T> GetAll(Expression<Func<T,bool>>? predacate=null , string? icludeWord = null);
 
         T GetByID(Expression<Func<T, bool>>? predacate=null, string? icludeWord = null);
 

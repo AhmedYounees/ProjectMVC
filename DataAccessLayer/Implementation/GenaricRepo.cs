@@ -25,7 +25,7 @@ namespace DataAccessLayer.Implementation
             _dbSet.Add(item);
         }
 
-        public List<T> GetAll(Expression<Func<T, bool>>? predacate= null, string? icludeWord = null)
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? predacate= null, string? icludeWord = null)
         {
             IQueryable<T> query = _dbSet;
             if (predacate != null)

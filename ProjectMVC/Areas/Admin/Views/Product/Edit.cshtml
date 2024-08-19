@@ -1,0 +1,64 @@
+﻿
+@model Product
+
+@{
+
+    ViewBag.PageTitle = "Product Managment";
+    ViewBag.CardTitle = "Edit Product";
+    Layout = "_DashboradLayout";
+    SelectList items = new SelectList(ViewBag.category, "name","id");
+}
+
+@* <h1>Create</h1> *@
+<form  method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" />
+    <div class="mb-6">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-6">
+        <label asp-for="Description" class="control-label"></label>
+        <input asp-for="Description" class="form-control" />
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="mb-6">
+        <label asp-for="Price" class="control-label"></label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="mb-6">
+        <label asp-for="img" class="control-label"></label>
+        <input type="file" name="file" id="imgfile" class="form-control" />
+    </div>
+
+    <div class="mb-6">
+        <label asp-for="CategoryId" class="control-label"></label>
+        <select asp-for="CategoryId" asp-items="items">
+            <option disabled selected>---- Select Category ----</option>
+        </select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-6">
+        <input type="submit" class="btn btn-success" value="Save" />
+        <a asp-action="index" asp-controller="Product" class="btn btn-outline-secondary">Cancel</a>
+    </div>
+</form>
+
+@* <script src="~/lib/jquery-validation/dist/jquery"></script>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script> *@
+
+@* لما بشغل الجزء بتاع البارشل  بيعمل
+client SIde validation  *@
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+}
