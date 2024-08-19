@@ -97,16 +97,38 @@ namespace ProjectMVC.Areas.Admin.Controllers
             var product = _unitOfWork.Product.GetByID(x=>x.Id==id);
             var categorylist=_unitOfWork.Category.GetAll();
             ViewBag.category=categorylist;
-            return View();
+            return View(product);
               
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Product product)
+        public IActionResult Edit(Product product,IFormFile? file)
         {
 
-            int IDFromDataBase = product.Id;
+            string RootPath = _webHostEnvironment.WebRootPath;
+            if (file != null)
+            {
+                string fileName = Guid.NewGuid().ToString();
+                var upload = Path.Combine(RootPath, @"Images\Products");
+                var ext = Path.GetExtension(file.FileName);
 
+                if (product.img != null) { 
+                
+                    var oldimg= Path.Combine(RootPath,product.img.TrimStart('\\'));
+                    if (System.IO.File.Exists(oldimg))
+                    {
+                        System.IO.File.Delete(oldimg);
+                    }
+                
+                }
+
+
+                using (var filestream = new FileStream(Path.Combine(upload, fileName + ext), FileMode.Create))
+                {
+                    file.CopyTo(filestream);
+                }
+                product.img = @"Images\Products\" + fileName + ext;
+            }
 
             _unitOfWork.Product.update(product);
             _unitOfWork.complete();

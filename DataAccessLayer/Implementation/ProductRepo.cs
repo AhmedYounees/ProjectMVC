@@ -27,6 +27,7 @@ namespace DataAccessLayer.Implementation
             productinDB.CategoryId=product.CategoryId;
             productinDB.img = product.img;
             
+            
             }
         }
     }

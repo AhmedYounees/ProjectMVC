@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ namespace Entities.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public string? img { get; set; }
+        
         public decimal Price { get; set; }
         [ForeignKey("Category")]
         public int CategoryId { get; set; }

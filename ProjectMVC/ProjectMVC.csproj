@@ -24,13 +24,13 @@
     <Content Include="Areas\Admin\Views\Category\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Category\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Product\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Product\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Product\Index.cshtml" />
     <Content Include="Areas\Admin\Views\_ViewImports.cshtml" />
     <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Areas\Admin\Views\Product\Edit.cshtml" />
     <None Include="wwwroot\js\site.js" />
   </ItemGroup>
 
