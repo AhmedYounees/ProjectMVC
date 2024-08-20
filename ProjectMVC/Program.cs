@@ -4,6 +4,7 @@ using Entities.Models;
 using Entities.Reposatories;
 using Microsoft.EntityFrameworkCore;
 using Entities.Reposatories ;
+using Microsoft.AspNetCore.Identity;
 
 namespace ProjectMVC
 {
@@ -21,6 +22,8 @@ namespace ProjectMVC
                     b => b.MigrationsAssembly("DataAccessLayer"));
 
             });
+          // builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<ApplicationDbContext>();
+           builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddScoped<ApplicationDbContext>();
             builder.Services.AddScoped<IUnitOfWork,UnitOfWok>();
             //builder.Services.AddScoped<IGeneircRepository<Category>,CategoryRepository>();
@@ -36,11 +39,13 @@ namespace ProjectMVC
             app.UseRouting();
 
             app.UseAuthorization();
-
+            app.MapRazorPages();
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{area=Admin}/{controller=Home}/{action=Index}/{id?}");
-
+            app.MapControllerRoute(
+                name: "Customer",
+                pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
             app.Run();
         }
     }

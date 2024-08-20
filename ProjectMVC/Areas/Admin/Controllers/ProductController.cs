@@ -56,13 +56,13 @@ namespace ProjectMVC.Areas.Admin.Controllers
                 if (file != null)
                 {
                     string fileName = Guid.NewGuid().ToString();
-                    var upload = Path.Combine(RootPath, @"Images\Products");
+                    var upload = Path.Combine(RootPath, @"");
                     var ext = Path.GetExtension(file.FileName);
                     using (var filestream = new FileStream(Path.Combine(upload, fileName + ext), FileMode.Create))
                     {
                         file.CopyTo(filestream);
                     }
-                    productFReq.img = @"Images\Products\" + fileName + ext;
+                    productFReq.img = @"" + fileName + ext;
                 }
 
                 _unitOfWork.Product.add(productFReq);
