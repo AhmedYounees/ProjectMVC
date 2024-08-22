@@ -20,5 +20,6 @@ namespace Entities.Reposatories
         void remove(T item);
 
         void removeRange(List<T> entities);
+       
     }
 }

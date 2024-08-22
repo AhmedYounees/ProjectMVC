@@ -155,7 +155,7 @@ namespace ProjectMVC.Areas.Identity.Pages.Account
                         await _userManager.AddToRoleAsync(user, role);
 
                     }
-                    return RedirectToAction("Index", "Users",new {area ="Admin"});
+                    return RedirectToAction("Index", "Users", new { area = "Admin" });
 
 
 

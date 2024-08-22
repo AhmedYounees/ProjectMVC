@@ -41,6 +41,7 @@ namespace DataAccessLayer.Implementation
             }
             return query.ToList();
         }
+
         public T GetByID(Expression<Func<T, bool>>? predacate = null, string? icludeWord = null)
         {
             IQueryable<T> query = _dbSet;
@@ -57,6 +58,8 @@ namespace DataAccessLayer.Implementation
             }
             return query.FirstOrDefault();
         }
+
+       
 
         public void remove(T item)
         {

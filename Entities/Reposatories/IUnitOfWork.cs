@@ -10,6 +10,7 @@ namespace Entities.Reposatories
     {
         ICategoryRepo Category { get; }
         IProductRepo Product { get; }
+        IShopingCartRepo ShoppingCart { get; }
 
         int complete();
     }

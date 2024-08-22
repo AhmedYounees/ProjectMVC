@@ -5,15 +5,16 @@
 @model ShopingCartVM;
 
 @* واحد هيتحنيك ويقول ليه ضايف المكتبة هنا والله ما راضية تشتغل  معايا غير بيهاا *@
-<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-
+@* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> *@
+ <form method="post"> 
 <section class="py-5">
     <div class="container px-4 px-lg-5 mt-5">
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
 <div class="col mb-2">
     <div class="card h-100 w-50">
+        <input type="hidden" asp-for="ProductId" />
         <!-- Product image-->
-         <img class="card-img-top" src="~/@Model.Product.img" width="20" height="100" alt="..." />
+          <img class="card-img-top" src="~/@Model.Product.img" width="20" height="100" alt="..." /> 
         <!-- Product details-->
         <div class="card-body p-4">
             <div class="text-center">
@@ -26,10 +27,14 @@
         <!-- Product actions-->
         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
             <input asp-for="@Model.Count" value="@Model.Count" class="form-control text-center me-3" />
-            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add To Card</a></div>
+            <button type="submit" class="btn btn-outline-dark flex-shrink-0">
+                <i class="bi-cart-fill me-1"></i>
+                Add To Card
+            </button>
         </div>
     </div>
 </div>
         </div>
     </div>
 </section>
+ </form> 

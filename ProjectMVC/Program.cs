@@ -24,7 +24,7 @@ namespace ProjectMVC
             });
           // builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<ApplicationDbContext>();
            builder.Services.AddDefaultIdentity<IdentityUser>
-                (options => options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5))
+                (options => options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5)).AddDefaultUI()
                 .AddRoles<IdentityRole>()
                 .AddRoleManager<RoleManager<IdentityRole>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
