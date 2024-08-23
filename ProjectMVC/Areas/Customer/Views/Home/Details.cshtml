@@ -2,7 +2,7 @@
 @{
     Layout = "_Customer";
 }
-@model ShopingCartVM;
+@model ShopingCart;
 
 @* واحد هيتحنيك ويقول ليه ضايف المكتبة هنا والله ما راضية تشتغل  معايا غير بيهاا *@
 @* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> *@
@@ -14,8 +14,8 @@
     <div class="card h-100 w-50">
         <input type="hidden" asp-for="ProductId" />
         <!-- Product image-->
-          <img class="card-img-top" src="~/@Model.Product.img" width="20" height="100" alt="..." /> 
-        <!-- Product details-->
+                        <img class="card-img-top" src="~/Images/Products/@Model.Product.img" width="20" height="100" alt="..." />
+                        <!-- Product details-->
         <div class="card-body p-4">
             <div class="text-center">
                 <!-- Product name-->

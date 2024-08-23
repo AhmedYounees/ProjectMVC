@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Entities.Models
 {
-    public class ShopingCartVM
+    public class ShopingCart
     {
         public int ID { get; set; }
         public int ProductId { get; set; }
@@ -21,7 +21,7 @@ namespace Entities.Models
         public int Count { get; set; }
         [ForeignKey("applicationUserId")]
         [ValidateNever]
-        public ApplicationUser applicationUser { get; set; }
+        public ApplicationUser aspplicationUser { get; set; }
         public string applicationUserId { get; set; }
     }
 }

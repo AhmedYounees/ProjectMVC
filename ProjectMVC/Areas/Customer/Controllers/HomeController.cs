@@ -29,7 +29,7 @@ namespace ProjectMVC.Areas.Customer.Controllers
         
         public IActionResult Detalis(int ProductID)
         {
-            ShopingCartVM shopincartvm = new ShopingCartVM()
+            ShopingCart shopincartvm = new ShopingCart()
             {
                 ProductId = ProductID,
                 Product= unitOfWork.Product.GetByID(p => p.Id == ProductID, icludeWord: "Category"),
@@ -44,7 +44,7 @@ namespace ProjectMVC.Areas.Customer.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         
-        public IActionResult Detalis(ShopingCartVM shoppinCart)
+        public IActionResult Detalis(ShopingCart shoppinCart)
         {
             var claimsidentity = (ClaimsIdentity)User.Identity;
             var claim = claimsidentity.FindFirst(ClaimTypes.NameIdentifier);

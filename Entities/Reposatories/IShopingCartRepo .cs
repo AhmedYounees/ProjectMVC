@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Entities.Reposatories
 {
-    public interface IShopingCartRepo : IGenaricRepo<ShopingCartVM> 
+    public interface IShopingCartRepo : IGenaricRepo<ShopingCart> 
     {
-         void update(ShopingCartVM ShopingCart);
-        public int IncreaseCount(ShopingCartVM shopinCart, int Count);
-        public int DecreaseCount(ShopingCartVM shopinCart, int Count);
+         void update(ShopingCart ShopingCart);
+        public int IncreaseCount(ShopingCart shopinCart, int Count);
+        public int DecreaseCount(ShopingCart shopinCart, int Count);
     }
 }

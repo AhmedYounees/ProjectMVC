@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Implementation
 {
-    public class ShoppingCartRepo : GenaricRepo<ShopingCartVM>, IShopingCartRepo
+    public class ShoppingCartRepo : GenaricRepo<ShopingCart>, IShopingCartRepo
     {
         private readonly ApplicationDbContext _context;
         public ShoppingCartRepo(ApplicationDbContext context) : base(context)
@@ -17,19 +17,19 @@ namespace DataAccessLayer.Implementation
             _context = context;
         }
 
-        public int DecreaseCount(ShopingCartVM shopinCart, int Count)
+        public int DecreaseCount(ShopingCart shopinCart, int Count)
         {
             shopinCart.Count-= Count;
             return shopinCart.Count;
         }
 
-        public int IncreaseCount(ShopingCartVM shopinCart, int Count)
+        public int IncreaseCount(ShopingCart shopinCart, int Count)
         {
             shopinCart.Count += Count;
             return shopinCart.Count;
         }
 
-        public void update(ShopingCartVM ShopingCart)
+        public void update(ShopingCart ShopingCart)
         {
             var ShopingCartFromDatabase = _context.shopingCarts.FirstOrDefault(x => x.ID == ShopingCart.ID);
             if (ShopingCartFromDatabase != null)
