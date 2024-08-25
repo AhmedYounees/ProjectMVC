@@ -19,14 +19,36 @@ namespace ProjectMVC.Areas.Customer.Controllers
             this.unitOfWork = unitOfWork;
             
         }
-        
-        public IActionResult Index()
+
+        //public IActionResult Index()
+        //{
+
+        //    var ProductList=unitOfWork.Product.GetAll();
+        //    return View("Index",ProductList);
+        //}
+        public IActionResult Index(string categoryName, string? esrch, int page = 1, int pageSize = 10)
         {
-            
-            var ProductList=unitOfWork.Product.GetAll();
-            return View("Index",ProductList);
+
+            var total = unitOfWork.Product.GetAll().Count();
+            IEnumerable<Product> ProductList;
+            if (categoryName != null)
+            {
+                ProductList = unitOfWork.Product.GetAll(p => p.Category.name == categoryName);
+
+            }
+            else
+            {
+
+                ProductList = unitOfWork.Product.GetAll();
+            }
+            var result = ProductList.Skip((page - 1) * pageSize)
+                                  .Take(pageSize);
+            ViewBag.totalIT = total;
+            ViewBag.CurrentPage = page;
+
+            return View("Index", result);
         }
-        
+
         public IActionResult Detalis(int ProductID)
         {
             ShopingCart shopincartvm = new ShopingCart()

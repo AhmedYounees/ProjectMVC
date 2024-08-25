@@ -3,7 +3,7 @@
     Layout = "_Customer";
 
 }
-@model List<Product>
+@model IEnumerable<Product>
 
 
 <section class="py-5">
@@ -31,8 +31,20 @@
                     </div>
                 </div>
 
+               
             }
+           
 
         </div>
+        <nav>
+            <ul class="pagination">
+                @for (int i = 1; i <= ViewBag.totalIT; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
     </div>
 </section>
