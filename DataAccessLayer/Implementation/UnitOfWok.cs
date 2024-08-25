@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.Data;
+using Entities.Models;
 using Entities.Reposatories;
 using System;
 using System.Collections.Generic;
@@ -14,12 +15,18 @@ namespace DataAccessLayer.Implementation
         public ICategoryRepo Category { get; private set; }
         public IProductRepo Product { get; private set; }
         public IShopingCartRepo ShoppingCart { get; private set; }
+        public IOrderHeaderRepo OrderHeader { get; private set; }
+        public IOrderDetailRepo OrderDetail { get; private set; }
+        public IApplicationUserRepo ApplicationUser { get; private set; }
         public UnitOfWok (ApplicationDbContext context) 
         {
             _context = context;
             Category=new CategoryRepo(context);
             Product=new ProductRepo(context);
             ShoppingCart=new ShoppingCartRepo(context);
+            OrderHeader=new OredrHeaderRepo(context);   
+            OrderDetail=new OredrDetailRepo(context);
+            ApplicationUser=new ApplicationUserRepo(context);
         }
         
 

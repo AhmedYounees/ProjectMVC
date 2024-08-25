@@ -10,6 +10,7 @@ namespace Entities.Models
     public class OrderHeader
     {
         public int Id { get; set; }
+        
         public string ApplicationUserId { get; set; }
 
         [ValidateNever]

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Utilities;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Stripe;
 
 namespace ProjectMVC
 {
@@ -22,6 +23,7 @@ namespace ProjectMVC
                     b => b.MigrationsAssembly("DataAccessLayer"));
 
             });
+            builder.Services.Configure<StripeData>(builder.Configuration.GetSection("stripe"));
           // builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<ApplicationDbContext>();
            builder.Services.AddDefaultIdentity<IdentityUser>
                 (options => options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5)).AddDefaultUI()
@@ -42,6 +44,7 @@ namespace ProjectMVC
             app.UseStaticFiles();
 
             app.UseRouting();
+            StripeConfiguration.ApiKey = builder.Configuration.GetSection("stripe:Secretkey").Get<string>();
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapRazorPages();

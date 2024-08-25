@@ -12,6 +12,11 @@ namespace Entities.Reposatories
         IProductRepo Product { get; }
         IShopingCartRepo ShoppingCart { get; }
 
+        IOrderHeaderRepo OrderHeader { get; }
+        IOrderDetailRepo OrderDetail { get; }
+        IApplicationUserRepo ApplicationUser { get; }
+       
+
         int complete();
     }
 }
