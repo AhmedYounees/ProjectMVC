@@ -13,6 +13,7 @@
         public const string Cancelled = "Cancelled";
         public const string Refund = "Refund";
         public const string Shipped = "Shipped";
+        public const string SessionKey = "ShopingCartSession";
 
 
 

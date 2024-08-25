@@ -6,6 +6,7 @@ using System.Security.Claims;
 using Controller = Microsoft.AspNetCore.Mvc.Controller;
 using Microsoft.AspNetCore.Authorization;
 using DataAccessLayer.Data;
+using Utilities;
 
 namespace ProjectMVC.Areas.Customer.Controllers
 {
@@ -79,7 +80,10 @@ namespace ProjectMVC.Areas.Customer.Controllers
             {
 
                 unitOfWork.ShoppingCart.add(shoppinCart);
-
+                HttpContext.Session.SetInt32(SD.SessionKey,
+                    unitOfWork.ShoppingCart.GetAll(x => x.applicationUserId == claim.Value).ToList().Count()
+                    );
+                unitOfWork.complete();
             }
             else
             {
@@ -90,7 +94,7 @@ namespace ProjectMVC.Areas.Customer.Controllers
 
             //  var product = unitOfWork.Product.GetByID(p => p.Id == id, icludeWord: "Category");
          
-            unitOfWork.complete();
+            
             //  return View("Details", shopincartvm);
             return RedirectToAction("index");
         }

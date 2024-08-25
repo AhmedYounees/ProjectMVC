@@ -128,7 +128,7 @@ namespace ProjectMVC.Areas.Admin.Controllers
             _unitOfWork.complete();
             TempData["Type"] = "info";
             TempData["message"] = "Order has Cancelled Successfully";
-            return RedirectToAction("Details", "Order", new { orderid = OrderVM.OrderHeader.Id });
+            return RedirectToAction("index", "Order", new { orderid = OrderVM.OrderHeader.Id });
         }
 
     }

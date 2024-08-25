@@ -34,6 +34,9 @@ namespace ProjectMVC
             builder.Services.AddScoped<IUnitOfWork,UnitOfWok>();
             builder.Services.AddSingleton<IEmailSender, EmailSender>();
             //builder.Services.AddScoped<IGeneircRepository<Category>,CategoryRepository>();
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -47,6 +50,7 @@ namespace ProjectMVC
             StripeConfiguration.ApiKey = builder.Configuration.GetSection("stripe:Secretkey").Get<string>();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseSession();
             app.MapRazorPages();
             app.MapControllerRoute(
                 name: "default",
