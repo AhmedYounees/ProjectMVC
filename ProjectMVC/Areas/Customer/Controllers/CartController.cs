@@ -154,7 +154,6 @@ namespace ProjectMVC.Areas.Customer.Controllers
             var service = new SessionService();
             Session session = service.Create(options);
             shoppingcartVM.OrderHeader.SessionId = session.Id;
-            shoppingcartVM.OrderHeader.PaymentIntentId = session.PaymentIntentId;
             _unitOfWork.complete();
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
@@ -174,6 +173,7 @@ namespace ProjectMVC.Areas.Customer.Controllers
             if (session.PaymentStatus.ToLower() == "paid")
             {
                 _unitOfWork.OrderHeader.updateOrderStates(id, SD.Approve, SD.Approve);
+                orderHeader.PaymentIntentId = session.PaymentIntentId;
                 _unitOfWork.complete();
             }
             List<ShopingCart> shoppingcarts = _unitOfWork.ShoppingCart.GetAll(u=>u.applicationUserId == orderHeader.ApplicationUserId).ToList();

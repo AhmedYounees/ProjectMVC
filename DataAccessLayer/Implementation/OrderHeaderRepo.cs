@@ -30,6 +30,7 @@ namespace DataAccessLayer.Implementation
             if (orderFromDB != null) {
             
                 orderFromDB.OrderStatus = OrderStates;
+                orderFromDB.OrderDate = DateTime.Now;
                 if (PaymentStates != null)
                 {
 
