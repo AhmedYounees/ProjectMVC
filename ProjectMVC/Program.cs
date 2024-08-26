@@ -17,6 +17,8 @@ namespace ProjectMVC
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddHttpContextAccessor();
+
             builder.Services.AddDbContext<ApplicationDbContext>(option =>
             {
                 option.UseSqlServer(builder.Configuration.GetConnectionString("cs"),
@@ -52,6 +54,7 @@ namespace ProjectMVC
             app.UseAuthorization();
             app.UseSession();
             app.MapRazorPages();
+           
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{area=Admin}/{controller=Home}/{action=Index}/{id?}");
