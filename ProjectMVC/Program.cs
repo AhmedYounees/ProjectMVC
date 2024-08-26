@@ -58,6 +58,8 @@ namespace ProjectMVC
             app.MapControllerRoute(
                 name: "Customer",
                 pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
+
+            
             app.Run();
         }
     }
