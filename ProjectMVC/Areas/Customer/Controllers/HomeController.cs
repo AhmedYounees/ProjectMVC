@@ -131,7 +131,7 @@ namespace ProjectMVC.Areas.Customer.Controllers
             ShopingCart shopincartvm = new ShopingCart()
             {
                 ProductId = ProductID,
-                Product = unitOfWork.Product.GetByID(p => p.Id == ProductID, icludeWord: "Category"),
+                Product = unitOfWork.Product.GetByID(p => p.Id == ProductID, icludeWord: "Category,Reviews"),
                 Count = 1,
             };
             return View("Details", shopincartvm);
@@ -161,8 +161,48 @@ namespace ProjectMVC.Areas.Customer.Controllers
                 unitOfWork.ShoppingCart.IncreaseCount(cartFromDatabase, shoppinCart.Count);
                 unitOfWork.complete();
             }
+           
 
             return RedirectToAction("index","Cart");
+        }
+
+        [Authorize]
+        //Add comment
+        public IActionResult Comment(int id,string comment ,int rate)
+        {
+
+            var product = unitOfWork.Product.GetByID(p=>p.Id==id);
+            review rev = new review();
+            rev.comment= comment;
+            rev.Rate = rate;
+            product.Reviews.Add(rev);
+            unitOfWork.complete();
+
+            return RedirectToAction("Index");
+            
+            
+
+        }
+        public ActionResult<int> ClacRate(int id) {
+        
+        var product = unitOfWork.Product.GetByID(u=>u.Id==id);
+
+            int AvarageRate = 0;
+            int sum = 0;
+            int count = 0;
+            foreach(var item in product.Reviews) {
+
+                sum += item.Rate;
+                count++;
+            
+            }
+
+
+            AvarageRate=sum/count;
+            return AvarageRate;
+
+
+
         }
     }
 }

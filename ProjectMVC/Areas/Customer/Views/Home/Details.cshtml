@@ -35,6 +35,22 @@
                 </ul>
             </div>
         </div>
+         
+        <div >
+            
+                @foreach(var item in Model.Product.Reviews)
+                {
+                    <h1 style="border :1px solid red">@item.comment,,,@item.Rate,,@item</h1>
+                }
+               @* @* هنا دا الاكشن العايزه عشان يبعتلك الافرج *@
+                <a href="/Customer//home/ClacRate/@Model.Product.Id"></a>
+        </div>
     </div>
 </section>
 </form>
+<Form style="border:2px solid black" asp-action="Comment" asp-controller="Home" asp-route-id="@Model.Product.Id">
+    <label>Comment</label><br />
+    <input type="text" name="comment" style="width:200px;" /><br />
+    <input type="number" name="rate" style="width:200px;" /><br />
+    <button type="submit" class="btn btn-success">Add Comment</button>
+</Form>

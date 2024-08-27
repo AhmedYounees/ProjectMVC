@@ -20,6 +20,8 @@ namespace Entities.Models
         public int CategoryId { get; set; }
         public Category? Category { get; set; }
 
+       public virtual List<review>Reviews { get; set; }=new List<review>();
+
  
     }
 }
