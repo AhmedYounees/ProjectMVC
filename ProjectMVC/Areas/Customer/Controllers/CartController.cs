@@ -183,38 +183,55 @@ namespace ProjectMVC.Areas.Customer.Controllers
             return View("confirm",id);
         }
 
-        public IActionResult Plus(int cartid) 
+        [HttpPost]
+        public IActionResult Plus(int cartId)
         {
-            var shoppingcart = _unitOfWork.ShoppingCart.GetAll().FirstOrDefault(x => x.ID == cartid);
-            _unitOfWork.ShoppingCart.IncreaseCount(shoppingcart, 1);
+            var cartFromDb = _unitOfWork.ShoppingCart.GetByID(u => u.ID == cartId);
+            cartFromDb.Count += 1;
             _unitOfWork.complete();
-            return RedirectToAction("Index");
-        }        
-
-        public IActionResult Minus(int cartid) 
-        {
-
-            var shoppingcart = _unitOfWork.ShoppingCart.GetAll().FirstOrDefault(x => x.ID == cartid);
-            if (shoppingcart.Count<=1)
-            {
-                _unitOfWork.ShoppingCart.remove(shoppingcart);
-				_unitOfWork.complete();
-				return RedirectToAction("Index","Home");
-			}
-            else
-            {
-            _unitOfWork.ShoppingCart.DecreaseCount(shoppingcart, 1);
-            }
-            _unitOfWork.complete();
-            return RedirectToAction("Index");
+            return PartialView("_CartWrapper", GetShoppingCartVM());
         }
-		public IActionResult Remove(int cartid)
-		{
-			var shoppingcart = _unitOfWork.ShoppingCart.GetAll().FirstOrDefault(x => x.ID == cartid);
-			_unitOfWork.ShoppingCart.remove(shoppingcart);
-			_unitOfWork.complete();
-			return RedirectToAction("Index");
-		}
 
-	}
+        [HttpPost]
+        public IActionResult Minus(int cartId)
+        {
+            var cartFromDb = _unitOfWork.ShoppingCart.GetByID(u => u.ID == cartId);
+            if (cartFromDb.Count <= 1)
+            {
+                return PartialView("_CartWrapper", GetShoppingCartVM());
+            }
+            cartFromDb.Count -= 1;
+            _unitOfWork.complete();
+            return PartialView("_CartWrapper", GetShoppingCartVM());
+        }
+
+        [HttpPost]
+        public IActionResult Remove(int cartId)
+        {
+            var cartFromDb = _unitOfWork.ShoppingCart.GetByID(u => u.ID == cartId);
+            _unitOfWork.ShoppingCart.remove(cartFromDb);
+            _unitOfWork.complete();
+            return PartialView("_CartWrapper", GetShoppingCartVM());
+        }
+
+        private ShoppingCartVM GetShoppingCartVM()
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            ShoppingCartVM shoppingCartVM = new()
+            {
+                CartList = _unitOfWork.ShoppingCart.GetAll(u => u.applicationUserId == userId, icludeWord: "Product"),
+                TotalCarts = 0
+            };
+
+            foreach (var cart in shoppingCartVM.CartList)
+            {
+                shoppingCartVM.TotalCarts += (cart.Product.Price * cart.Count);
+            }
+
+            return shoppingCartVM;
+        }
+
+    }
 }

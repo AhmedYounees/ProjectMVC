@@ -1,0 +1,172 @@
+﻿@model IEnumerable<Product>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-action="Home" method="get" id="filter-form">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-auto">
+                                <input type="text" name="searchTerm" class="form-control" placeholder="Search products" value="@ViewBag.SearchTerm">
+                            </div>
+                            <div class="col-auto">
+                                <select name="categoryName" class="form-select">
+                                    <option value="">All Categories</option>
+                                    @foreach (var category in ViewBag.Categories)
+                                    {
+                                        <option value="@category" selected="@(category == ViewBag.CurrentCategory)">@category</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-auto">
+                                <input type="number" name="minPrice" class="form-control" placeholder="Min Price" value="@ViewBag.MinPrice">
+                            </div>
+                            <div class="col-auto">
+                                <input type="number" name="maxPrice" class="form-control" placeholder="Max Price" value="@ViewBag.MaxPrice">
+                            </div>
+                            <div class="col-auto">
+                                <select name="sortBy" class="form-select">
+                                    <option value="">Sort By</option>
+                                    <option value="price_asc" selected="@(ViewBag.SortBy == "price_asc")">Price: Low to High</option>
+                                    <option value="price_desc" selected="@(ViewBag.SortBy == "price_desc")">Price: High to Low</option>
+                                    <option value="name_asc" selected="@(ViewBag.SortBy == "name_asc")">Name: A to Z</option>
+                                    <option value="name_desc" selected="@(ViewBag.SortBy == "name_desc")">Name: Z to A</option>
+                                </select>
+                            </div>
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-primary">Apply Filters</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="product-list">
+        @foreach (var product in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm product-card" data-product-id="@product.Id">
+                    <img src="~/@product.img" class="card-img-top" alt="@product.Name">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@product.Name</h5>
+                        <p class="card-text flex-grow-1">@product.Description</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0">$@product.Price.ToString("F2")</span>
+                            <button class="btn btn-primary add-to-cart" data-product-id="@product.Id">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div id="loading-spinner" class="text-center d-none">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+    <style>
+        .product-card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+            .product-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            }
+
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            let currentPage = @ViewBag.CurrentPage;
+            let loading = false;
+            let noMoreProducts = false;
+
+            // Configure Toastr
+            toastr.options = {
+                closeButton: true,
+                progressBar: true,
+                positionClass: "toast-top-right",
+                timeOut: 3000,
+                extendedTimeOut: 1000,
+                showEasing: "swing",
+                hideEasing: "linear",
+                showMethod: "slideDown",
+                hideMethod: "slideUp"
+            };
+
+            function loadMoreProducts() {
+                if (loading || noMoreProducts) return;
+                loading = true;
+
+                $('#loading-spinner').removeClass('d-none');
+
+                currentPage++;
+                var url = '@Url.Action("Home", "Home", new { area = "Customer" })' +
+                    '?page=' + currentPage +
+                    '&categoryName=@ViewBag.CurrentCategory' +
+                    '&searchTerm=@ViewBag.SearchTerm' +
+                    '&minPrice=@ViewBag.MinPrice' +
+                    '&maxPrice=@ViewBag.MaxPrice' +
+                    '&sortBy=@ViewBag.SortBy';
+
+                $.get(url, function (data) {
+                    var $data = $(data);
+                    var $newProducts = $data.find('#product-list').children();
+
+                    if ($newProducts.length > 0) {
+                        $('#product-list').append($newProducts);
+                    } else {
+                        noMoreProducts = true;
+                    }
+
+                    loading = false;
+                    $('#loading-spinner').addClass('d-none');
+                });
+            }
+
+            $(window).scroll(function () {
+                if (!noMoreProducts && $(window).scrollTop() + $(window).height() > $(document).height() - 200) {
+                    loadMoreProducts();
+                }
+            });
+
+            $(document).on('click', '.add-to-cart', function (e) {
+                e.stopPropagation();
+                var productId = $(this).data('product-id');
+                $.post('/Customer/Home/AddToCart', { productId: productId }, function (data) {
+                    if (data.success) {
+                        toastr.success(data.message, 'Success');
+                    } else {
+                        toastr.error(data.message, 'Error');
+                    }
+                });
+            });
+
+            $(document).on('click', '.product-card', function () {
+                var productId = $(this).data('product-id');
+                window.location.href = '/Customer/Home/Detalis?ProductID=' + productId;
+            });
+        });
+    </script>
+}
+}

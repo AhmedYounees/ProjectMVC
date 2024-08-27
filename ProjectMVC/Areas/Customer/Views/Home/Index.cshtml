@@ -1,50 +1,386 @@
-﻿@using Entities.Models;
+﻿@model HomeViewModel
+
 @{
-    Layout = "_Customer";
-
+    ViewData["Title"] = "Home Page";
 }
-@model IEnumerable<Product>
 
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            overflow-x:hidden
+        }
 
-<section class="py-5">
-    <div class="container px-4 px-lg-5 mt-5">
-        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-            @foreach (var item in Model)
+        .section {
+            padding: 60px 0;
+        }
+
+        .section-title {
+            position: relative;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background-color: #007bff;
+        }
+
+        .card {
+            border: none;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .card-img-top {
+            height: 180px;
+            object-fit: cover;
+        }
+
+        @@media (max-width: 768px) {
+            .card-img-top {
+                height: 140px;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .card-img-top {
+                height: 110px;
+            }
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .category-card .card-img-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 8px;
+            color: white;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .badge-sale {
+            background-color: #dc3545;
+        }
+
+        .badge-new {
+            background-color: #28a745;
+        }
+
+        .badge-popular {
+            background-color: #ffc107;
+        }
+
+        .newsletter-section {
+            background-color: #f8f9fa;
+            padding: 40px 0;
+        }
+
+        .testimonial-section {
+            background-color: #e9ecef;
+            padding: 40px 0;
+        }
+
+        .brand-section {
+            background-color: #ffffff;
+            padding: 40px 0;
+        }
+
+        .brand-item {
+            filter: grayscale(100%);
+            transition: filter 0.3s ease-in-out;
+            max-width: 100px;
+            margin: 0 auto;
+        }
+
+        .brand-item:hover {
+            filter: grayscale(0%);
+        }
+
+        .owl-nav button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.7) !important;
+            color: #000 !important;
+            padding: 5px 10px !important;
+            font-size: 1.5rem !important;
+        }
+
+        .owl-prev {
+            left: 10px;
+        }
+
+        .owl-next {
+            right: 10px;
+        }
+
+        .featured-categories {
+            background-color: #f1f8ff;
+            padding: 60px 0;
+        }
+
+        .top-offers {
+            background-color: #fff5f5;
+            padding: 60px 0;
+        }
+
+        .new-arrivals {
+            background-color: #f0fff4;
+            padding: 60px 0;
+        }
+
+        .popular-products {
+            background-color: #fff9db;
+            padding: 60px 0;
+        }
+
+        .owl-carousel {
+            display: block !important;
+        }
+
+        .owl-carousel .owl-stage-outer {
+            overflow: visible;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-text {
+            font-size: 0.9rem;
+        }
+
+        .btn-sm {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+        }
+
+        @@media (min-width: 768px) {
+            .section {
+                padding: 50px 0;
+            }
+        }
+
+        @@media (min-width: 992px) {
+            .section {
+                padding: 60px 0;
+            }
+        }
+    </style>
+}
+
+<!-- Featured Categories -->
+<section class="section featured-categories">
+    <div class="container-fluid container-lg">
+        <div class="section-title"><a href="@Url.Action("Home", "Home")" class=" btn btn-primary">Shop Now</a></div>
+ <div /> 
+        <section />
+
+                         
+        <section class="section featured-categories">
+    <div class="container-fluid container-lg">
+        <h2 class="section-title">Featured Categories</h2>
+        <div class="owl-carousel category-carousel">
+            @foreach (var category in Model.FeaturedCategories)
             {
-                <div class="col mb-5">
-                    <div class="card h-100">
-                        <!-- Product image-->
-                        <a href="/customer/home/detalis?ProductID=@item.Id"> <img class="card-img-top" src="~/Images/Products/@item.img" width="400" height="350" alt="..." /></a>
-                        <!-- Product details-->
-                        <div class="card-body p-4">
-                            <div class="text-center">
-                                <!-- Product name-->
-                                <h5 class="fw-bolder">@item.Name</h5>
-                                <!-- Product price-->
-                                $@item.Price
-                            </div>
-                        </div>
-                        <!-- Product actions-->
-                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="/customer/home/detalis?ProductID=@item.Id">Show Details</a></div>
+                <div class="item">
+                    <div class="card category-card">
+                        <img src="https://via.placeholder.com/300x200?text=@category.name" class="card-img" alt="@category.name">
+                        <div class="card-img-overlay">
+                            <h5 class="card-title text-white">@category.name</h5>
+                            <a href="@Url.Action("Home", "Home", new { area = "Customer", categoryName = category.name })" class="btn btn-outline-light btn-sm">View Products</a>
                         </div>
                     </div>
                 </div>
-
-               
             }
-           
-
         </div>
-        <nav>
-            <ul class="pagination">
-                @for (int i = 1; i <= ViewBag.totalIT; i++)
-                {
-                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                        <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
-                    </li>
-                }
-            </ul>
-        </nav>
     </div>
 </section>
+
+<!-- Top Offers -->
+<section class="section top-offers">
+    <div class="container-fluid container-lg">
+        <h2 class="section-title">Top Offers</h2>
+        <div class="owl-carousel product-carousel">
+            @foreach (var product in Model.TopOffers)
+            {
+                <div class="item">
+                    <div class="card h-100">
+                        <div class="product-badge badge-sale">Sale</div>
+                        <img src="~/@(string.IsNullOrEmpty(product.img) ? "https://via.placeholder.com/300x200?text=" + product.Name : product.img)" class="card-img-top" alt="@product.Name">
+                        <div class="card-body">
+                            <h5 class="card-title">@product.Name</h5>
+                            <p class="card-text">
+                                <span class="text-danger">$@product.Price.ToString("F2")</span>
+                                <span class="text-muted"><del>$@((product.Price * 1.2m).ToString("F2"))</del></span>
+                            </p>
+                            <a href="@Url.Action("Detalis", "Home", new { area = "Customer", ProductID = product.Id })" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- New Arrivals -->
+<section class="section new-arrivals">
+    <div class="container-fluid container-lg">
+        <h2 class="section-title">New Arrivals</h2>
+        <div class="owl-carousel product-carousel">
+            @foreach (var product in Model.NewArrivals)
+            {
+                <div class="item">
+                    <div class="card h-100">
+                        <div class="product-badge badge-new">New</div>
+                        <img src="~/@(string.IsNullOrEmpty(product.img) ? "https://via.placeholder.com/300x200?text=" + product.Name : product.img)" class="card-img-top" alt="@product.Name">
+                        <div class="card-body">
+                            <h5 class="card-title">@product.Name</h5>
+                            <p class="card-text">$@product.Price.ToString("F2")</p>
+                            <a href="@Url.Action("Detalis", "Home", new { area = "Customer", ProductID = product.Id })" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Popular Products -->
+<section class="section popular-products">
+    <div class="container-fluid container-lg">
+        <h2 class="section-title">Popular Products</h2>
+        <div class="owl-carousel product-carousel">
+            @foreach (var product in Model.PopularProducts)
+            {
+                <div class="item">
+                    <div class="card h-100">
+                        <div class="product-badge badge-popular">Popular</div>
+                        <img src="~/@(string.IsNullOrEmpty(product.img) ? "https://via.placeholder.com/300x200?text=" + product.Name : product.img)" class="card-img-top" alt="@product.Name">
+                        <div class="card-body">
+                            <h5 class="card-title">@product.Name</h5>
+                            <p class="card-text">$@product.Price.ToString("F2")</p>
+                            <a href="@Url.Action("Detalis", "Home", new { area = "Customer", ProductID = product.Id })" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter -->
+<section class="newsletter-section">
+    <div class="container-fluid container-lg text-center">
+        <h2 class="section-title">Join Our Newsletter</h2>
+        <p>Subscribe to receive updates, access to exclusive deals, and more.</p>
+        <form class="form-inline justify-content-center">
+            <div class="form-group mx-sm-3 mb-2">
+                <input type="email" class="form-control" id="newsletterEmail" placeholder="Enter your email">
+            </div>
+            <button type="submit" class="btn btn-primary mb-2">Subscribe</button>
+        </form>
+    </div>
+</section>
+
+
+
+
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.category-carousel').owlCarousel({
+                loop: true,
+                margin: 10,
+                nav: true,
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    600: {
+                        items: 3
+                    },
+                    1000: {
+                        items: 4
+                    }
+                }
+            });
+
+            $('.product-carousel').owlCarousel({
+                loop: true,
+                margin: 10,
+                nav: true,
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    600: {
+                        items: 3
+                    },
+                    1000: {
+                        items: 4
+                    }
+                }
+            });
+
+            $('.testimonial-carousel').owlCarousel({
+                loop: true,
+                margin: 10,
+                nav: true,
+                items: 1,
+                autoplay: true,
+                autoplayTimeout: 5000,
+                autoplayHoverPause: true
+            });
+
+            $('.brand-carousel').owlCarousel({
+                loop: true,
+                margin: 30,
+                nav: false,
+                responsive: {
+                    0: {
+                        items: 2
+                    },
+                    600: {
+                        items: 4
+                    },
+                    1000: {
+                        items: 6
+                    }
+                }
+            });
+        });
+    </script>
+}
+
