@@ -162,7 +162,7 @@ namespace ProjectMVC.Areas.Customer.Controllers
                 unitOfWork.complete();
             }
 
-            return RedirectToAction("index","Cart");
+            return RedirectToAction("index","Home");
         }
     }
 }

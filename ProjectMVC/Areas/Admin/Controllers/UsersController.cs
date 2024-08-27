@@ -46,5 +46,12 @@ namespace ProjectMVC.Areas.Admin.Controllers
             _context.SaveChanges();
             return RedirectToAction("Index","Users",new {area = "Admin"});
         }
+        public IActionResult Delete(string id)
+        {
+            var user=_context.applicationUsers.FirstOrDefault(x=>x.Id==id);
+            _context.Remove(user);
+            _context.SaveChanges();     
+            return RedirectToAction("index");
+        }
     }
 }

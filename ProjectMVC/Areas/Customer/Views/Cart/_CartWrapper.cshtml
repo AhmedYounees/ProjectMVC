@@ -47,6 +47,7 @@
                     </div>
                     <div class="d-flex justify-content-between align-items-center mt-4">
                         <h4>Total: $<span id="cart-total">@Model.TotalCarts.ToString("F2")</span></h4>
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Back to Shop</a>
                         <a href="@Url.Action("Summary", "Cart")" class="btn btn-primary">Proceed to Checkout</a>
                     </div>
                 </div>

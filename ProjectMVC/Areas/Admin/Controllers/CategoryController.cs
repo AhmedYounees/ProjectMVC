@@ -1,10 +1,14 @@
 ﻿using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 using Entities.Reposatories;
+using Utilities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProjectMVC.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.AdminRole)]
+
     public class CategoryController : Controller
     {
         private IUnitOfWork _unitOfWork;
