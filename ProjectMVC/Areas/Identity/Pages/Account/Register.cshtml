@@ -75,37 +75,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-body text-center">
-                        <h3 class="mb-4">Or Register Using</h3>
-                        <hr />
-                        @{
-                            if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                            {
-                                <div>
-                                    <p>
-                                        No external authentication services configured. Learn more <a href="https://go.microsoft.com/fwlink/?LinkID=532715">here</a>.
-                                    </p>
-                                </div>
-                            }
-                            else
-                            {
-                                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                                    <div class="d-grid gap-2">
-                                        @foreach (var provider in Model.ExternalLogins!)
-                                        {
-                                            <button type="submit" class="btn btn-outline-primary btn-lg" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
-                                                <i class="bi bi-@provider.Name.ToLower()"></i> @provider.DisplayName
-                                            </button>
-                                        }
-                                    </div>
-                                </form>
-                            }
-                        }
-                    </div>
-                </div>
-            </div>
+            
         </div>
     </div>
 </section>

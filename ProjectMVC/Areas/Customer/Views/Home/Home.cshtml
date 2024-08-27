@@ -144,6 +144,60 @@
                 });
             }
 
+           
+                function updateCart(cartId, action) {
+                    $.ajax({
+                        url: '/Customer/Cart/' + action,
+                        type: 'POST',
+                        data: { cartId: cartId },
+                        success: function (response) {
+                            $('#cart-wrapper').html(response);
+                            updateFloatingCart();
+                        },
+                        error: function () {
+                            toastr.error('An error occurred. Please try again.');
+                        }
+                    });
+                }
+
+                function updateFloatingCart() {
+                    $.ajax({
+                        url: '/Customer/Cart/GetCartItems',
+                        type: 'GET',
+                        success: function (response) {
+                            $('#cart-items').html(response.cartItemsHtml);
+                            $('#cart-total').text(response.total.toFixed(2));
+                            if (response.itemCount > 0) {
+                                $('#floating-cart').removeClass('d-none');
+                            } else {
+                                $('#floating-cart').addClass('d-none');
+                            }
+                        },
+                        error: function () {
+                            toastr.error('Failed to update cart.');
+                        }
+                    });
+                }
+
+                $(document).on('click', '.plus, .minus', function () {
+                    var cartId = $(this).data('cart-id');
+                    var action = $(this).hasClass('plus') ? 'Plus' : 'Minus';
+                    updateCart(cartId, action);
+                });
+
+                $(document).on('click', '.remove', function () {
+                    var cartId = $(this).data('cart-id');
+                    updateCart(cartId, 'Remove');
+                });
+
+                $('#close-cart').click(function () {
+                    $('#floating-cart').addClass('d-none');
+                });
+
+                
+                updateFloatingCart();
+           
+
             $(window).scroll(function () {
                 if (!noMoreProducts && $(window).scrollTop() + $(window).height() > $(document).height() - 200) {
                     loadMoreProducts();
@@ -155,7 +209,9 @@
                 var productId = $(this).data('product-id');
                 $.post('/Customer/Home/AddToCart', { productId: productId }, function (data) {
                     if (data.success) {
+
                         toastr.success(data.message, 'Success');
+                        updateFloatingCart();
                     } else {
                         toastr.error(data.message, 'Error');
                     }

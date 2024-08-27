@@ -3,6 +3,9 @@ using Entities.Reposatories;
 using Entities.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Options;
 using Stripe.Checkout;
@@ -20,9 +23,12 @@ namespace ProjectMVC.Areas.Customer.Controllers
         public int TotalCarts { get; set; }
 
 
-        public CartController(IUnitOfWork unitOfWork)
+        private readonly ICompositeViewEngine _viewEngine;
+
+        public CartController(IUnitOfWork unitOfWork, ICompositeViewEngine viewEngine)
         {
             _unitOfWork = unitOfWork;
+            _viewEngine = viewEngine;
             ShoppingCartVM = new ShoppingCartVM();
         }
         public IActionResult Index()
@@ -231,6 +237,39 @@ namespace ProjectMVC.Areas.Customer.Controllers
             }
 
             return shoppingCartVM;
+        }
+
+        [HttpGet]
+        public IActionResult GetCartItems()
+        {
+            var shoppingCartVM = GetShoppingCartVM();
+            string cartItemsHtml = RenderViewToString("_CartItems", shoppingCartVM);
+
+            return Json(new
+            {
+                cartItemsHtml = cartItemsHtml,
+                total = shoppingCartVM.TotalCarts,
+                itemCount = shoppingCartVM.CartList.Sum(c => c.Count)
+            });
+        }
+
+        private string RenderViewToString(string viewName, object model)
+        {
+            ViewData.Model = model;
+            using (var sw = new StringWriter())
+            {
+                var viewResult = _viewEngine.FindView(ControllerContext, viewName, false);
+                var viewContext = new ViewContext(
+                    ControllerContext,
+                    viewResult.View,
+                    ViewData,
+                    TempData,
+                    sw,
+                    new HtmlHelperOptions()
+                );
+                viewResult.View.RenderAsync(viewContext);
+                return sw.GetStringBuilder().ToString();
+            }
         }
 
     }
