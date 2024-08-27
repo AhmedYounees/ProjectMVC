@@ -23,17 +23,24 @@ namespace ProjectMVC.Areas.Customer.Controllers
             var viewModel = new HomeViewModel()
             {
                 FeaturedCategories = unitOfWork.Category.GetAll().Take(6).ToList(),
-                TopOffers = unitOfWork.Product.GetAll(p => p.Price < 20000, icludeWord: "Category").Take(4).ToList(),
-                NewArrivals = unitOfWork.Product.GetAll(icludeWord: "Category").OrderByDescending(p => p.Id).Take(8).ToList(),
-                PopularProducts = unitOfWork.Product.GetAll(icludeWord: "Category").Take(4).ToList()
+                TopOffers = unitOfWork.Product.GetAll(p => p.Price < 20000, icludeWord: "Category,Reviews").Take(4).ToList(),
+                NewArrivals = unitOfWork.Product.GetAll(icludeWord: "Category,Reviews").OrderByDescending(p => p.Id).Take(8).ToList(),
+                PopularProducts = unitOfWork.Product.GetAll(icludeWord: "Category,Reviews").Take(4).ToList()
             };
+
+            
+            var allProducts = viewModel.TopOffers.Concat(viewModel.NewArrivals).Concat(viewModel.PopularProducts).Distinct();
+            ViewBag.AverageRatings = allProducts.ToDictionary(
+                p => p.Id,
+                p => CalculateAverageRating(p.Reviews)
+            );
 
             return View(viewModel);
         }
 
         public IActionResult Home(string categoryName, string searchTerm, decimal? minPrice, decimal? maxPrice, string sortBy, int page = 1, int pageSize = 12)
         {
-            IEnumerable<Product> products = unitOfWork.Product.GetAll((p) => true, icludeWord: "Category");
+            IEnumerable<Product> products = unitOfWork.Product.GetAll((p) => true, icludeWord: "Category,Reviews");
 
             if (!string.IsNullOrEmpty(categoryName))
             {
@@ -75,11 +82,19 @@ namespace ProjectMVC.Areas.Customer.Controllers
                     break;
             }
 
+
+
             var total = products.Count();
             var totalPages = (int)Math.Ceiling(total / (double)pageSize);
-            var result = products.Skip((page - 1) * pageSize)
-                                 .Take(pageSize)
-                                 .ToList();
+            var result = products.Select(p => new
+            {
+                Product = p,
+                AverageRating = CalculateAverageRating(p.Reviews)
+            }).Skip((page - 1) * pageSize)
+             .Take(pageSize)
+             .ToList();
+
+            ViewBag.AverageRatings = result.ToDictionary(r => r.Product.Id, r => r.AverageRating);
 
             ViewBag.TotalPages = totalPages;
             ViewBag.CurrentPage = page;
@@ -90,10 +105,10 @@ namespace ProjectMVC.Areas.Customer.Controllers
             ViewBag.SortBy = sortBy;
             ViewBag.Categories = unitOfWork.Category.GetAll().Select(c => c.name).Distinct().ToList();
 
-            return View(result);
+            return View(result.Select(r => r.Product).ToList());
         }
 
-        // Other actions remain the same
+        
 
         [HttpPost]
         [Authorize]
@@ -166,43 +181,74 @@ namespace ProjectMVC.Areas.Customer.Controllers
             return RedirectToAction("index","Cart");
         }
 
-        [Authorize]
-        //Add comment
-        public IActionResult Comment(int id,string comment ,int rate)
+         public IActionResult Details(int ProductID)
         {
+            ShopingCart shopingcartvm = new ShopingCart()
+            {
+                ProductId = ProductID,
+                Product = unitOfWork.Product.GetByID(p => p.Id == ProductID, icludeWord: "Category,Reviews"),
+                Count = 1,
+            };
 
-            var product = unitOfWork.Product.GetByID(p=>p.Id==id);
-            review rev = new review();
-            rev.comment= comment;
-            rev.Rate = rate;
-            product.Reviews.Add(rev);
-            unitOfWork.complete();
+            ViewBag.AverageRating = CalculateAverageRating(shopingcartvm.Product.Reviews);
 
-            return RedirectToAction("Index");
-            
-            
-
+            return View(shopingcartvm);
         }
-        public ActionResult<int> ClacRate(int id) {
-        
-        var product = unitOfWork.Product.GetByID(u=>u.Id==id);
 
-            int AvarageRate = 0;
-            int sum = 0;
-            int count = 0;
-            foreach(var item in product.Reviews) {
-
-                sum += item.Rate;
-                count++;
-            
+        [Authorize]
+        [HttpPost]
+        public IActionResult AddReview(int id, int rate, string comment)
+        {
+            var product = unitOfWork.Product.GetByID(p => p.Id == id, icludeWord: "Reviews");
+            if (product == null)
+            {
+                return NotFound();
             }
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            AvarageRate=sum/count;
-            return AvarageRate;
+        
+            var existingReview = product.Reviews.FirstOrDefault(r => r.UserId == userId);
+            if (existingReview != null)
+            {
+                TempData["ErrorMessage"] = "You have already reviewed this product.";
+                return RedirectToAction("Details", new { ProductID = id });
+            }
 
+            var review = new Review
+            {
+                ProductId = id,
+                UserId = userId,
+                Rate = rate,
+                Comment = comment
+            };
 
+            product.Reviews.Add(review);
+            unitOfWork.complete();
 
+            TempData["SuccessMessage"] = "Your review has been added successfully.";
+            return RedirectToAction("Details", new { ProductID = id });
         }
+
+        private double CalculateAverageRating(IEnumerable<Review> reviews)
+        {
+            if (reviews == null || !reviews.Any())
+            {
+                return 0;
+            }
+
+            return reviews.Average(r => r.Rate);
+        }
+
+        private double CalculateAverageRating(List<Review> reviews)
+        {
+            if (reviews == null || reviews.Count == 0)
+            {
+                return 0;
+            }
+
+            return reviews.Average(r => r.Rate);
+        }
+
     }
 }

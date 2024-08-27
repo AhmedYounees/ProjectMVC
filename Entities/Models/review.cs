@@ -1,23 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Entities.Models
 {
-    public class review
+    public class Review
     {
+        public int Id { get; set; }
 
-        public int id { get; set; }
-        public string comment { get; set; }
-        [Range(0,5)]
+        [Required]
+        [Range(1, 5, ErrorMessage = "Please enter a value between 1 and 5")]
         public int Rate { get; set; }
-        [ForeignKey("product")]
-        public int productID { get; set; }
-        public Product product { get; set; }
-      
+
+        [Required]
+        [StringLength(500, ErrorMessage = "Comment can't be longer than 500 characters")]
+        public string Comment { get; set; }
+
+        [ForeignKey("Product")]
+        public int ProductId { get; set; }
+        public Product Product { get; set; }
+
+        [ForeignKey("ApplicationUser")]
+        public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }

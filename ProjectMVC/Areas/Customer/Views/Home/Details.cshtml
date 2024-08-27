@@ -1,56 +1,172 @@
-﻿@using Entities.ViewModels;
+﻿@model ShopingCart
+@using System.Security.Claims
 @{
     Layout = "_Customer";
 }
-@model ShopingCart;
 
-<form  method="post" >
-<section class="py-5 bg-light">
-    <div class="container px-4 px-lg-5 my-5">
-        <div class="row gx-4 gx-lg-5 align-items-center">
-           
-            <div class="col-md-6">
-                <img class="img-fluid rounded mb-4 mb-md-0" src="~/@Model.Product.img" alt="@Model.Product.Description" style="width: 100%; max-height: 500px; object-fit: cover;" />
-            </div>
-        
-            <div class="col-md-6">
-                <h1 class="display-5 fw-bolder">@Model.Product.Name</h1>
-                <div class="fs-5 mb-4">
-                    <span class="text-muted text-decoration-line-through">$@(Model.Product.Price+200)</span>
-                    <br />
-                    <span class="text-primary">$@Model.Product.Price</span>
+@section Styles {
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        .star-rating {
+            color: #ffc107;
+        }
+    </style>
+}
+
+<form method="post">
+    <section class="py-5 bg-light">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="row gx-4 gx-lg-5 align-items-center">
+                <div class="col-md-6">
+                    <img class="img-fluid rounded mb-4 mb-md-0" src="~/@Model.Product.img" alt="@Model.Product.Description" style="width: 100%; max-height: 500px; object-fit: cover;" />
                 </div>
-                <p class="lead">@Model.Product.Description</p>
-                <div class="d-flex">
-                    <input asp-for="@Model.Count" value="@Model.Count" class="form-control text-center me-3" style="width: 75px;" />
-                    <button type="submit" class="btn btn-outline-dark flex-shrink-0">
-                        <i class="bi-cart-fill me-1"></i>
-                        Add to Cart
-                    </button>
+                <div class="col-md-6">
+                    <h1 class="display-5 fw-bolder">@Model.Product.Name</h1>
+                    <div class="fs-5 mb-4">
+                        <span class="text-muted text-decoration-line-through">$@(Model.Product.Price + 200)</span>
+                        <br />
+                        <span class="text-primary">$@Model.Product.Price</span>
+                    </div>
+                    <div class="mb-3">
+                        <span class="star-rating">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= ViewBag.AverageRating)
+                                {
+                                    <i class="fas fa-star"></i>
+                                }
+                                else if (i - 0.5 <= ViewBag.AverageRating)
+                                {
+                                    <i class="fas fa-star-half-alt"></i>
+                                }
+                                else
+                                {
+                                    <i class="far fa-star"></i>
+                                }
+                            }
+                        </span>
+                        <span class="ms-2">@ViewBag.AverageRating.ToString("F1") out of 5</span>
+                    </div>
+                    <p class="lead">@Model.Product.Description</p>
+                    <div class="d-flex">
+                        <input asp-for="@Model.Count" value="@Model.Count" class="form-control text-center me-3" style="width: 75px;" />
+                        <button type="submit" class="btn btn-outline-dark flex-shrink-0">
+                            <i class="bi-cart-fill me-1"></i>
+                            Add to Cart
+                        </button>
+                    </div>
+                    <ul class="mt-4 list-unstyled">
+                        <li><strong>Category:</strong> @Model.Product.Category.name</li>
+                        <li><strong>Availability:</strong> In Stock</li>
+                        <li><strong>Brand:</strong> @Model.Product.Name</li>
+                    </ul>
                 </div>
-                <ul class="mt-4 list-unstyled">
-                    <li><strong>Category:</strong> @Model.Product.Category.name</li>
-                    <li><strong>Availability:</strong> In Stock</li>
-                    <li><strong>Brand:</strong> @Model.Product.Name</li>
-                </ul>
             </div>
         </div>
-         
-        <div >
-            
-                @foreach(var item in Model.Product.Reviews)
+    </section>
+</form>
+
+<div class="container mt-5">
+    <h2>Customer Reviews</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <h4>Average Rating: @ViewBag.AverageRating.ToString("F1")</h4>
+            <div class="star-rating">
+                @for (int i = 1; i <= 5; i++)
                 {
-                    <h1 style="border :1px solid red">@item.comment,,,@item.Rate,,@item</h1>
+                    if (i <= ViewBag.AverageRating)
+                    {
+                        <i class="fas fa-star"></i>
+                    }
+                    else if (i - 0.5 <= ViewBag.AverageRating)
+                    {
+                        <i class="fas fa-star-half-alt"></i>
+                    }
+                    else
+                    {
+                        <i class="far fa-star"></i>
+                    }
                 }
-               @* @* هنا دا الاكشن العايزه عشان يبعتلك الافرج *@
-                <a href="/Customer//home/ClacRate/@Model.Product.Id"></a>
+            </div>
+        </div>
+        <div class="col-md-8">
+            @foreach (var review in Model.Product.Reviews.OrderByDescending(r => r.CreatedAt))
+            {
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <span class="star-rating">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= review.Rate)
+                                    {
+                                        <i class="fas fa-star"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="far fa-star"></i>
+                                    }
+                                }
+                            </span>
+                            <span class="ms-2">@review.Rate / 5</span>
+                        </h5>
+                        <p class="card-text">@review.Comment</p>
+                        <p class="card-text"><small class="text-muted">Posted on @review.CreatedAt.ToString("MMMM dd, yyyy")</small></p>
+                    </div>
+                </div>
+            }
         </div>
     </div>
-</section>
-</form>
-<Form style="border:2px solid black" asp-action="Comment" asp-controller="Home" asp-route-id="@Model.Product.Id">
-    <label>Comment</label><br />
-    <input type="text" name="comment" style="width:200px;" /><br />
-    <input type="number" name="rate" style="width:200px;" /><br />
-    <button type="submit" class="btn btn-success">Add Comment</button>
-</Form>
+</div>
+
+<div class="container mt-5">
+    <h2>Leave a Review</h2>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (Model.Product.Reviews.Any(r => r.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)))
+    {
+        <p class="text-muted">You have already reviewed this product.</p>
+    }
+    else
+    {
+        <form asp-action="AddReview" asp-controller="Home" asp-route-id="@Model.Product.Id" method="post">
+            <div class="form-group">
+                <label>Rating</label>
+                <div class="star-rating">
+                    @for (int i = 5; i >= 1; i--)
+                    {
+                        <input type="radio" id="star@(i)" name="rate" value="@i" required />
+                        <label for="star@(i)"><i class="far fa-star"></i></label>
+                    }
+                </div>
+            </div>
+            <div class="form-group mt-3">
+                <label for="comment">Comment</label>
+                <textarea class="form-control" id="comment" name="comment" rows="3" required maxlength="500"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Submit Review</button>
+        </form>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.star-rating input').on('change', function () {
+                var $this = $(this);
+                $this.closest('.star-rating').find('label i').removeClass('fas').addClass('far');
+                $this.closest('.star-rating').find('label i').slice(0, $this.val()).removeClass('far').addClass('fas');
+            });
+        });
+    </script>
+}
