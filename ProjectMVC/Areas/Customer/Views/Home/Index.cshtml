@@ -1,12 +1,12 @@
 ﻿@model HomeViewModel
 
+
 @{
     ViewData["Title"] = "Home Page";
 }
 
 @section Styles {
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+   
     <style>
         :root {
             --primary-color: #4a90e2;
@@ -244,6 +244,7 @@
 }
 
 <!-- Hero Section -->
+@if(User.Identity.IsAuthenticated){
 <section class="hero-section" style="background-image: url('https://via.placeholder.com/1920x600?text='); background-size: cover; background-position: center; height: 600px;">
     <div class="container h-100 d-flex align-items-center">
         <div class="hero-content text-white">
@@ -253,7 +254,7 @@
         </div>
     </div>
 </section>
-
+}
 <!-- Featured Categories -->
 <section id="featured-categories" class="section featured-categories">
     <div class="container-fluid container-lg">
@@ -435,10 +436,10 @@
 </section>
 
 @section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    
     <script>
         $(document).ready(function(){
+
             $('.category-carousel').owlCarousel({
                 loop: true,
                 margin: 20,

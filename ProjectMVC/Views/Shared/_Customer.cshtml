@@ -24,6 +24,8 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="~/Customer/css/styles.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
     @RenderSection("Styles", required: false)
 
     <style>
@@ -228,8 +230,15 @@
     </style>
 </head>
 <body>
+        @if (User.Identity.IsAuthenticated)
+    { 
 
-    <div id="floating-cart" class="d-none">
+    <button id="floating-cart-button" class="btn btn-primary  position-fixed" style="bottom: 20px; right: 20px; z-index: 1000;border-radius:10px">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="cart-item-count" class="badge bg-danger"></span>
+    </button>
+
+        <div id="floating-cart" class="position-fixed  p-3 bg-light shadow" style="width: 300px; display: none;top: 50px; right: 20px;">
         <div class="cart-header">
             <h5>Your Cart</h5>
             <button type="button" class="btn-close" id="close-cart"></button>
@@ -240,6 +249,7 @@
             <a href="@Url.Action("Index", "Cart", new { area = "Customer" })" class="btn btn-primary">View Cart</a>
         </div>
     </div>
+    }
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container px-4 px-lg-5">
@@ -268,12 +278,7 @@
                             </ul>
                         </li>
                     </ul>
-                    <form class="d-flex">
-                        <a class="btn btn-outline-dark" href="/Customer/cart/index">
-                            <i class="bi-cart-fill me-1"></i>
-                            Cart
-                        </a>
-                    </form>
+                    
                 }
                 else
                 {
@@ -299,7 +304,7 @@
                 <div class="text-center">
                     <h1 class="display-4 fw-bolder">Welcome to Nile Shop</h1>
                     <p class="lead fw-normal">E-Commerce Platform</p>
-                    <a href="~/Customer/Home/Index" class="btn btn-shop-now">Shop Now</a>
+                    <a href="~/Customer/Home/Home" class="btn btn-shop-now">Shop Now</a>
                 </div>
             </div>
         </header>
@@ -315,5 +320,102 @@
     <!-- Core theme JS-->
     <script src="~/Customer/js/scripts.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    
+    @if (User.Identity.IsAuthenticated){
+        <script>
+            $(document).ready(function () {
+            function updateCart(cartId, action) {
+                $.ajax({
+                    url: '/Customer/Cart/' + action,
+                    type: 'POST',
+                    data: { cartId: cartId },
+                    success: function (response) {
+                        $('#cart-wrapper').html(response);
+                        updateFloatingCart();
+                    },
+                    error: function () {
+                        toastr.error('An error occurred. Please try again.');
+                    }
+                });
+            }
+            function toggleCart() {
+                $('#floating-cart').toggle();
+            }
+
+
+            $('#floating-cart-button').click(function () {
+
+                toggleCart();
+            });
+
+
+            $('#close-cart').click(function () {
+                toggleCart();
+            });
+
+
+            function updateFloatingCart() {
+                $.ajax({
+                    url: '/Customer/Cart/GetCartItems',
+                    type: 'GET',
+                    success: function (response) {
+                        $('#cart-items').html(response.cartItemsHtml);
+                        $('#cart-total').text(response.total.toFixed(2));
+                        $('#cart-item-count').text(response.itemCount);
+                        if (response.itemCount > 0) {
+                            $('#floating-cart-button').removeClass('d-none');
+                        } else {
+                            $('#floating-cart-button').addClass('d-none');
+                        }
+                    },
+                    error: function () {
+                        toastr.error('Failed to update cart.');
+                    }
+                });
+            }
+
+
+
+
+            $(document).on('click', '.plus, .minus', function () {
+                var cartId = $(this).data('cart-id');
+                var action = $(this).hasClass('plus') ? 'Plus' : 'Minus';
+                updateCart(cartId, action);
+            });
+
+            $(document).on('click', '.remove', function () {
+                var cartId = $(this).data('cart-id');
+                updateCart(cartId, 'Remove');
+            });
+
+
+
+
+            updateFloatingCart();
+
+                $(document).on('click', '.add-to-cart', function (e) {
+                    e.stopPropagation();
+                    var productId = $(this).data('product-id');
+                    var CountDet = $('#prdcuntdeta')[0] ? $('#prdcuntdeta')[0].value :1
+
+                    $.post('/Customer/Home/AddToCart', { productId: productId, quantity: CountDet }, function (data) {
+                        if (data.success) {
+
+                            toastr.success(data.message, 'Success');
+                            updateFloatingCart();
+                        } else {
+                            toastr.error(data.message, 'Error');
+                        }
+                    });
+                });
+
+                $(document).on('click', '.product-card', function () {
+                    var productId = $(this).data('product-id');
+                    window.location.href = '/Customer/Home/Details?ProductID=' + productId;
+                });
+            });
+        </script>
+        
+    }
 </body>
 </html>

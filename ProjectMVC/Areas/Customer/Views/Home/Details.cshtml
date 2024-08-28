@@ -13,7 +13,7 @@
     </style>
 }
 
-<form method="post">
+<div >
     <section class="py-5 bg-light">
         <div class="container px-4 px-lg-5 my-5">
             <div class="row gx-4 gx-lg-5 align-items-center">
@@ -49,11 +49,12 @@
                     </div>
                     <p class="lead">@Model.Product.Description</p>
                     <div class="d-flex">
-                        <input asp-for="@Model.Count" value="@Model.Count" class="form-control text-center me-3" style="width: 75px;" />
-                        <button type="submit" class="btn btn-outline-dark flex-shrink-0">
+                        <input id="prdcuntdeta" asp-for="@Model.Count" value="@Model.Count" class="form-control text-center me-3" style="width: 75px;" />
+                        <button type="submit" class="btn btn-outline-dark flex-shrink-0 add-to-cart" data-product-id="@Model.Product.Id">
                             <i class="bi-cart-fill me-1"></i>
                             Add to Cart
                         </button>
+                        
                     </div>
                     <ul class="mt-4 list-unstyled">
                         <li><strong>Category:</strong> @Model.Product.Category.name</li>
@@ -64,7 +65,7 @@
             </div>
         </div>
     </section>
-</form>
+</div>
 
 <div class="container mt-5">
     <h2>Customer Reviews</h2>
@@ -159,14 +160,3 @@
     }
 </div>
 
-@section Scripts {
-    <script>
-        $(document).ready(function () {
-            $('.star-rating input').on('change', function () {
-                var $this = $(this);
-                $this.closest('.star-rating').find('label i').removeClass('fas').addClass('far');
-                $this.closest('.star-rating').find('label i').slice(0, $this.val()).removeClass('far').addClass('fas');
-            });
-        });
-    </script>
-}
