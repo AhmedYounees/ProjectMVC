@@ -227,11 +227,30 @@
                 .star-rating label:hover ~ label {
                     color: #f2b600;
                 }
+
+
     </style>
 </head>
 <body>
         @if (User.Identity.IsAuthenticated)
-    { 
+    {
+        <div class="modal fade" id="removeConfirmModal" tabindex="-1" aria-labelledby="removeConfirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="removeConfirmModalLabel">Confirm Removal</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to remove this item from your cart?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="confirmRemove">Remove</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     <button id="floating-cart-button" class="btn btn-primary  position-fixed" style="bottom: 20px; right: 20px; z-index: 1000;border-radius:10px">
         <i class="fas fa-shopping-cart"></i>
@@ -262,14 +281,13 @@
                 @if (User.Identity.IsAuthenticated)
                 {
                     <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Hello @User.Identity.Name</a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li class="nav-item">
+                            <a class="nav-link" id="navbarDropdown" href="#" role="button">Hello @User.Identity.Name</a>
+                            <ul class="dropdown-menu" id="userDropdown">
                                 <li><a class="dropdown-item" href="#!">My Orders</a></li>
-                                <li><hr class="dropdown-divider" /></li>
-                                
-                                <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Edit Profile</a></li>
-                                <li><hr class="dropdown-divider" /></li>
+                                <li><div class="dropdown-divider"></div></li>
+                                <li><a class="dropdown-item" href="/Identity/Account/Manage">Edit Profile</a></li>
+                                <li><div class="dropdown-divider"></div></li>
                                 <li>
                                     <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                                         <button id="logout" type="submit" class="dropdown-item">Logout</button>
@@ -324,6 +342,18 @@
     @if (User.Identity.IsAuthenticated){
         <script>
             $(document).ready(function () {
+
+                toastr.options = {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: "toast-top-right",
+                    timeOut: 3000,
+                    extendedTimeOut: 1000,
+                    showEasing: "swing",
+                    hideEasing: "linear",
+                    showMethod: "slideDown",
+                    hideMethod: "slideUp"
+                };
             function updateCart(cartId, action) {
                 $.ajax({
                     url: '/Customer/Cart/' + action,
@@ -355,37 +385,49 @@
 
 
             function updateFloatingCart() {
-                $.ajax({
-                    url: '/Customer/Cart/GetCartItems',
-                    type: 'GET',
-                    success: function (response) {
-                        $('#cart-items').html(response.cartItemsHtml);
-                        $('#cart-total').text(response.total.toFixed(2));
-                        $('#cart-item-count').text(response.itemCount);
-                        if (response.itemCount > 0) {
-                            $('#floating-cart-button').removeClass('d-none');
-                        } else {
-                            $('#floating-cart-button').addClass('d-none');
-                        }
-                    },
-                    error: function () {
-                        toastr.error('Failed to update cart.');
-                    }
-                });
+    $.ajax({
+        url: '/Customer/Cart/GetCartItems',
+        type: 'GET',
+        success: function (response) {
+            $('#cart-items').html(response.cartItemsHtml);
+            $('#cart-total').text(response.total.toFixed(2));
+            $('#cart-item-count').text(response.itemCount);
+            if (response.itemCount > 0) {
+                $('#floating-cart-button').removeClass('d-none');
+            } else {
+                $('#floating-cart-button').addClass('d-none');
+                $('#floating-cart').hide(); 
             }
+        },
+        error: function () {
+            toastr.error('Failed to update cart.');
+        }
+    });
+}
 
+
+
+
+
+                $(document).on('click', '.remove', function () {
+                    var cartId = $(this).data('cart-id');
+                    $('#removeConfirmModal').data('cart-id', cartId).modal('show');
+                    
+                });
+
+                $(document).on('click', '#confirmRemove', function () {
+                    var cartId = $('#removeConfirmModal').data('cart-id');
+                    updateCart(cartId, 'Remove');
+                    $('#removeConfirmModal').modal('hide');
+                });
 
 
 
             $(document).on('click', '.plus, .minus', function () {
+                    
                 var cartId = $(this).data('cart-id');
                 var action = $(this).hasClass('plus') ? 'Plus' : 'Minus';
                 updateCart(cartId, action);
-            });
-
-            $(document).on('click', '.remove', function () {
-                var cartId = $(this).data('cart-id');
-                updateCart(cartId, 'Remove');
             });
 
 
@@ -415,7 +457,26 @@
                 });
             });
         </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const dropdownToggle = document.getElementById('navbarDropdown');
+                const dropdownMenu = document.getElementById('userDropdown');
+
+                dropdownToggle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    dropdownMenu.classList.toggle('show');
+                });
+
+                // Close the dropdown if clicked outside
+                window.addEventListener('click', function (e) {
+                    if (!dropdownToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                        dropdownMenu.classList.remove('show');
+                    }
+                });
+            });
+        </script>
         
     }
+
 </body>
 </html>

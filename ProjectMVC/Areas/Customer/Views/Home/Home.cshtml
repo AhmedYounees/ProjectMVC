@@ -79,7 +79,7 @@
     </div>
 
     @section Styles {
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+        
         <style>
             .product-card {
                 transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
@@ -106,18 +106,8 @@
                 let loading = false;
                 let noMoreProducts = false;
 
-                // Configure Toastr
-                toastr.options = {
-                    closeButton: true,
-                    progressBar: true,
-                    positionClass: "toast-top-right",
-                    timeOut: 3000,
-                    extendedTimeOut: 1000,
-                    showEasing: "swing",
-                    hideEasing: "linear",
-                    showMethod: "slideDown",
-                    hideMethod: "slideUp"
-                };
+             
+                
 
                 function loadMoreProducts() {
                     if (loading || noMoreProducts) return;

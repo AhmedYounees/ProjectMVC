@@ -12,6 +12,7 @@
             <span>x @item.Count</span>
         </div>
         <span>$@((item.Product.Price * item.Count).ToString("F2"))</span>
+        
         <button class="btn btn-danger btn-sm remove" data-cart-id="@item.ID">X</button>
     </div>
 }
